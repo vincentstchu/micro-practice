@@ -1,0 +1,8 @@
+export MICRO_ADRESS=50051
+export MICRO_REGISTRY=mdns
+export DB_NAME=postgres
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_USER=postgres
+export DB_PASSWORD=postgres
+export MICRO_REGISTRY=mdns
