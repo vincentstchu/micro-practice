@@ -1,5 +1,5 @@
 FROM alpine:latest
 RUN mkdir /app
 WORKDIR /app
-ADD vessel-service /app/vessel-service
+COPY vessel-service ./
 CMD ["./vessel-service"]

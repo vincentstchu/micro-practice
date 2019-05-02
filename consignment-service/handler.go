@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
+	// "github.com/micro/go-micro"
 	"log"
 	go_micro_srv_vessel "shippy/vessel-service/proto/vessel"
 	pb "shippy/consignment-service/proto/consignment"
@@ -20,6 +21,9 @@ func (h *handler)GetRepo()Repository  {
 func (h *handler)CreateConsignment(ctx context.Context, req *pb.Consignment, resp *pb.Response) error {
 	defer h.GetRepo().Close()
 
+	// vesselService := micro.NewService(micro.Name("micro.srv.vessel"))
+	// vesselService.Init()
+	// vessel := go_micro_srv_vessel.NewVesselService("micro.srv.vessel", vesselService.Client())
 	vReq := &go_micro_srv_vessel.Specification{
 		Capacity:  int32(len(req.Containers)),
 		MaxWeight: req.Weight,
@@ -39,7 +43,7 @@ func (h *handler)CreateConsignment(ctx context.Context, req *pb.Consignment, res
 	return nil
 }
 
-func (h *handler)GetConsignments(ctx context.Context, req *pb.GetRequest, resp *pb.Response) error {
+func (h *handler)GetConsignment(ctx context.Context, req *pb.GetRequest, resp *pb.Response) error {
 	defer h.GetRepo().Close()
 	consignments, err := h.GetRepo().GetAll()
 	if err != nil {

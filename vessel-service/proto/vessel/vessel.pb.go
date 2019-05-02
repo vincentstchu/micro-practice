@@ -4,8 +4,10 @@
 package go_micro_srv_vessel
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
 	math "math"
 )
 
@@ -231,4 +233,109 @@ var fileDescriptor_04ef66862bb50716 = []byte{
 	0x9f, 0x99, 0x34, 0x7e, 0x38, 0xc0, 0x09, 0x1a, 0x4f, 0x1c, 0x41, 0x19, 0x8e, 0x1a, 0x35, 0xfb,
 	0x7f, 0x0d, 0x2e, 0x70, 0x06, 0xee, 0x23, 0x9f, 0xc4, 0x53, 0x8e, 0xcf, 0xee, 0x59, 0xba, 0xfc,
 	0x9a, 0xa6, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x5f, 0x15, 0x18, 0x29, 0x6a, 0x02, 0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion4
+
+// VesselServiceClient is the client API for VesselService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type VesselServiceClient interface {
+	FindAvailable(ctx context.Context, in *Specification, opts ...grpc.CallOption) (*Response, error)
+	Create(ctx context.Context, in *Vessel, opts ...grpc.CallOption) (*Response, error)
+}
+
+type vesselServiceClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewVesselServiceClient(cc *grpc.ClientConn) VesselServiceClient {
+	return &vesselServiceClient{cc}
+}
+
+func (c *vesselServiceClient) FindAvailable(ctx context.Context, in *Specification, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/go.micro.srv.vessel.VesselService/FindAvailable", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vesselServiceClient) Create(ctx context.Context, in *Vessel, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/go.micro.srv.vessel.VesselService/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// VesselServiceServer is the server API for VesselService service.
+type VesselServiceServer interface {
+	FindAvailable(context.Context, *Specification) (*Response, error)
+	Create(context.Context, *Vessel) (*Response, error)
+}
+
+func RegisterVesselServiceServer(s *grpc.Server, srv VesselServiceServer) {
+	s.RegisterService(&_VesselService_serviceDesc, srv)
+}
+
+func _VesselService_FindAvailable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Specification)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VesselServiceServer).FindAvailable(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/go.micro.srv.vessel.VesselService/FindAvailable",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VesselServiceServer).FindAvailable(ctx, req.(*Specification))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VesselService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Vessel)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VesselServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/go.micro.srv.vessel.VesselService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VesselServiceServer).Create(ctx, req.(*Vessel))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _VesselService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "go.micro.srv.vessel.VesselService",
+	HandlerType: (*VesselServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FindAvailable",
+			Handler:    _VesselService_FindAvailable_Handler,
+		},
+		{
+			MethodName: "Create",
+			Handler:    _VesselService_Create_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/vessel/vessel.proto",
 }
