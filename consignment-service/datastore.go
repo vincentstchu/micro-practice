@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+//TODO: Need to adapt to mongo session
 func CreateClient(host string) (*mongo.Client, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(host))

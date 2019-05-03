@@ -21,6 +21,7 @@ func (h *handler)GetRepo()Repository  {
 func (h *handler)CreateConsignment(ctx context.Context, req *pb.Consignment, resp *pb.Response) error {
 	defer h.GetRepo().Close()
 
+	log.Println("start to create consignment")
 	// vesselService := micro.NewService(micro.Name("micro.srv.vessel"))
 	// vesselService.Init()
 	// vessel := go_micro_srv_vessel.NewVesselService("micro.srv.vessel", vesselService.Client())
@@ -30,12 +31,14 @@ func (h *handler)CreateConsignment(ctx context.Context, req *pb.Consignment, res
 	}
 	vResp, err := h.vessel.FindAvailable(context.Background(), vReq)
 	if err != nil {
+		log.Println("[x]cosignment-service[handler] vessel.FindAvailable ErrorInfo: ", err)
 		return err
 	}
 	log.Printf("found vessel: %sn", vResp.Vessel.Name)
 	req.VesselId = vResp.Vessel.Id
 	err = h.GetRepo().Create(req)
 	if err != nil {
+		log.Println("[x]cosignment-service[handler] Consignment Create ErrorInfo: ", err)
 		return err
 	}
 	resp.Created = true

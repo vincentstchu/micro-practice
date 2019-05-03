@@ -32,9 +32,10 @@ func main() {
 	server := micro.NewService(
 		micro.Name("go.micro.srv.consignment"),
 		micro.Version("latest"),
+		// for auth
 		micro.WrapHandler(AuthWrapper),
 	)
-	server.Init()
+
 	vClient := vesselPb.NewVesselServiceClient("go.micro.srv.vessel", server.Client())
 	pb.RegisterShippingServiceHandler(server.Server(), &handler{client, vClient})
 

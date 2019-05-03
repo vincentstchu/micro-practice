@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -26,10 +27,11 @@ func (repo *VesselRepository) FindAvailable(spec *pb.Specification) (*pb.Vessel,
 	var v *pb.Vessel
 	filter := bson.M{
 		"capacity":  bson.M{"$gte": spec.Capacity},
-		"maxweight": bson.M{"$bte": spec.MaxWeight},
+		"maxweight": bson.M{"$gte": spec.MaxWeight},
 	}
 	err := repo.getMongoCollection().FindOne(context.TODO(), filter).Decode(&v)
 	if err != nil {
+		log.Println("[x]vessel-service[repo] FindOne ErrorInfo: ", err)
 		return nil, err
 	}
 	return v, err
@@ -41,7 +43,7 @@ func (repo *VesselRepository) Create(v *pb.Vessel) error {
 }
 
 func (repo *VesselRepository) Close() {
-	repo.client.Disconnect(context.TODO())
+	// repo.client.Disconnect(context.TODO())
 }
 
 func (repo *VesselRepository) getMongoCollection() *mongo.Collection {

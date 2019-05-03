@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"errors"
 	"context"
 	pb "shippy/user-service/proto/user"
@@ -16,9 +17,6 @@ func (h *handler) Create(ctx context.Context, req *pb.User, resp *pb.Response) e
 	hashedPasswd, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
-	}
-	if err := h.repo.Create(req); err != nil {
-		return nil
 	}
 	req.Password = string(hashedPasswd)
 	if err:=h.repo.Create(req); err != nil {
@@ -47,11 +45,16 @@ func (h *handler) GetAll(ctx context.Context, req *pb.Request, resp *pb.Response
 }
 
 func (h *handler) Auth(ctx context.Context, req *pb.User, resp *pb.Token) error {
+	plainPasswd := req.Password
 	u, err := h.repo.GetByEmailAndPassword(req)
 	if err != nil {
+		log.Println("[x]user-service[handler] Error get user; Errorinfo: ", err)
 		return err
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(req.Password)); err != nil {
+	log.Println("[!]user-service[handler] get user : ", u)
+	log.Println("[!]user-service[handler] req user : ", req)
+	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(plainPasswd)); err != nil {
+		log.Println("[x]user-service[handler] hashed password comparision error; Errorinfo: ", err)
 		return err
 	}
 	t, err := h.tokenService.Encode(u)
@@ -59,6 +62,7 @@ func (h *handler) Auth(ctx context.Context, req *pb.User, resp *pb.Token) error 
 		return err
 	}
 	resp.Token = t
+	log.Println("[!]user-service[handler] Token= ", t)
 	return nil
 }
 

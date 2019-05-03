@@ -1,6 +1,8 @@
 package main
 
 import (
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/bson"
 	"context"
 	pb "shippy/consignment-service/proto/consignment"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,7 +30,9 @@ func (cr *ConsignmentRepository) Create(consignment *pb.Consignment) error {
 
 func (cr *ConsignmentRepository) GetAll() ([]*pb.Consignment, error) {
 	var cons []*pb.Consignment
-	cursor, err := cr.getMongoCollection().Find(context.TODO(), nil)
+	findOptions := options.Find()
+	findOptions.SetLimit(3)
+	cursor, err := cr.getMongoCollection().Find(context.TODO(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
@@ -40,11 +44,13 @@ func (cr *ConsignmentRepository) GetAll() ([]*pb.Consignment, error) {
 		}
 		cons = append(cons, item)
 	}
+	cursor.Close(context.TODO())
 	return cons, err
 }
 
+//TODO: not functional right now
 func (cr *ConsignmentRepository) Close() {
-	cr.client.Disconnect(context.TODO())
+	// cr.client.Disconnect(context.TODO())
 }
 
 func (cr *ConsignmentRepository) getMongoCollection() *mongo.Collection{

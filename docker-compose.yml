@@ -1,10 +1,10 @@
 version: '3.1'
 
 services:
-  cmd:
-    build: ./cmd
-    environment:
-      MICRO_REGISTRY: "mdns"
+  # cmd:
+  #   build: ./cmd
+  #   environment:
+  #     MICRO_REGISTRY: "mdns"
 
   consignment-service:
     build: ./consignment-service

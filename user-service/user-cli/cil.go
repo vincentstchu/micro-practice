@@ -46,12 +46,8 @@ func main() {
 			name := c.String("name")
 			email := c.String("email")
 			password := c.String("password")
+			
 			company := c.String("company")
-
-			log.Printf("insert %v\n", name)
-			log.Printf("insert %v\n", email)
-			log.Printf("insert %v\n", password)
-			log.Printf("insert %v\n", company)
 
 			r, err := client.Create(context.TODO(), &pb.User{
 				Name: name,
@@ -71,7 +67,15 @@ func main() {
 			for _, v := range getAll.Users {
 				log.Println(v)
 			}
-
+			log.Println("[!]cli password is:", password)
+			authResp , err := client.Auth(context.TODO(), &pb.User{
+				Email: email,
+				Password: password,
+			})
+			if err != nil {
+				log.Print("Cannot get token, error info: ", err)
+			}
+			log.Println("Token: ", authResp.GetToken())
 			os.Exit(0)
 		}),
 	)

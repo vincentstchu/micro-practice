@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var privateKey = []byte("jflam32!")
+var privateKey = []byte("`xs#a_1-!")
 
 type Authable interface {
 	Decode(tokenStr string) (*CustomClaims, error)
@@ -35,6 +35,7 @@ func (srv *TokenService) Decode(tokenStr string) (*CustomClaims, error) {
 
 func (srv *TokenService) Encode(user *pb.User) (string, error) {
 	expireTime := time.Now().Add(time.Hour * 24).Unix()
+	// payload
 	claims := CustomClaims {
 		user,
 		jwt.StandardClaims {

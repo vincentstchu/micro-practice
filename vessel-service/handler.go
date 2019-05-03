@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	pb "shippy/vessel-service/proto/vessel"
@@ -28,6 +29,7 @@ func (h *handler) FindAvailable(ctx context.Context, req *pb.Specification, resp
 	defer h.GetRepo().Close()
 	v, err := h.GetRepo().FindAvailable(req)
 	if err != nil {
+		log.Println("[x]vessel-service[handler] FindAvailable ErrorInfo: ", err)
 		return err
 	}
 	resp.Vessel = v
